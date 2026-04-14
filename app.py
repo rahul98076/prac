@@ -23,13 +23,13 @@ def get_server(server_id):
 @app.route('/servers', methods=['POST'])
 def create_server():
     data = request.get_json()
-    if not request.json or 'name' not in request.json:
-        abort(400,description="Missing required field: name")
+    if not data or 'name' not in data:
+        abort(400, description="Missing required field: name")
 
-    new_id = max(inventory.keys()) + 1
+    new_id = max(inventory.keys(), default=0) + 1
     new_server = {
-        "name": request.json['name'],
-        "role": request.json.get('role', 'unknown')
+        "name": data['name'],
+        "role": data.get('role', 'unknown')
     }
     inventory[new_id] = new_server
     return jsonify({"id": new_id, **new_server}), 201
